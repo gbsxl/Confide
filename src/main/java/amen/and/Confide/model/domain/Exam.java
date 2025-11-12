@@ -1,5 +1,7 @@
 package amen.and.Confide.model.domain;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -12,7 +14,11 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class Exam {
+    @Positive
+    @Min(1)
     private int lastConfessionDays;
+
+    @NotNull @NotBlank @NotEmpty @Valid
     private List<Sin> sins;
 
     public int getVenialSins(){

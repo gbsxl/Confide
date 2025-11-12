@@ -5,9 +5,5 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ValidationService {
-    public static Boolean isValid(ExamRequest examRequest){
-        //validar campos obrigatórios preenchidos,
-        //verifica se tem pelo menos um pecado
-        return true;
-    }
+    public static void isValid(ExamRequest examRequest){return;}
 }
