@@ -1,0 +1,60 @@
+package amen.and.Confide.model.domain;
+
+import lombok.Getter;
+
+@Getter
+public enum Category {
+    // Pecados capitais
+    SOBERBA(Subcategory.PECADOS_CAPITAIS),
+    AVAREZA(Subcategory.PECADOS_CAPITAIS),
+    LUXURIA(Subcategory.PECADOS_CAPITAIS),
+    IRA(Subcategory.PECADOS_CAPITAIS),
+    GULA(Subcategory.PECADOS_CAPITAIS),
+    INVEJA(Subcategory.PECADOS_CAPITAIS),
+    PREGUICA(Subcategory.PECADOS_CAPITAIS),
+
+    // 10 mandamentos
+    AMAR_A_DEUS_SOBRE_TODAS_AS_COISAS(Subcategory.DEZ_MANDAMENTOS),
+    TOMAR_NOME_DE_DEUS_EM_VAO(Subcategory.DEZ_MANDAMENTOS),
+    NAO_GUARDAR_DOMINGO(Subcategory.DEZ_MANDAMENTOS),
+    DESONRAR_PAI_MAE(Subcategory.DEZ_MANDAMENTOS),
+    NAO_MATAR(Subcategory.DEZ_MANDAMENTOS),
+    NAO_COMETER_ADULTERIO(Subcategory.DEZ_MANDAMENTOS),
+    NAO_ROUBAR(Subcategory.DEZ_MANDAMENTOS),
+    NAO_LEVANTAR_FALSO_TESTEMUNHO(Subcategory.DEZ_MANDAMENTOS),
+    NAO_COBICAR_MULHER_DO_PROXIMO(Subcategory.DEZ_MANDAMENTOS),
+    NAO_COBICAR_BENS_DO_PROXIMO(Subcategory.DEZ_MANDAMENTOS),
+
+
+    // pecados veniais
+    IMPRUDENCIA(Subcategory.PECADOS_VENIAIS),
+    IMPACIENCIA(Subcategory.PECADOS_VENIAIS),
+    FOFOCA(Subcategory.PECADOS_VENIAIS),
+    PEQUENA_MENTIRA(Subcategory.PECADOS_VENIAIS),
+    INVEJA_LEVE(Subcategory.PECADOS_VENIAIS),
+    DESATENCAO_NA_ORACAO(Subcategory.PECADOS_VENIAIS),
+    PREGUICA_ESPIRITUAL(Subcategory.PECADOS_VENIAIS),
+    FALTA_DE_CARIDADE(Subcategory.PECADOS_VENIAIS),
+    DESRESPEITO_PEQUENO(Subcategory.PECADOS_VENIAIS),
+    FALAR_MAL_DOS_OUTROS(Subcategory.PECADOS_VENIAIS),
+    ORGULHO_DISFARCADO(Subcategory.PECADOS_VENIAIS),
+    IRA_CONTIDA(Subcategory.PECADOS_VENIAIS),
+    EGOISMO_COTIDIANO(Subcategory.PECADOS_VENIAIS),
+    FALTA_DE_PACIENCA(Subcategory.PECADOS_VENIAIS),
+    NEGLIGENCIA(Subcategory.PECADOS_VENIAIS),
+    OMISSAO_NA_CARIDADE(Subcategory.PECADOS_VENIAIS),
+    MAL_USO_DO_TEMPO(Subcategory.PECADOS_VENIAIS),
+    FALTA_DE_PERDAO(Subcategory.PECADOS_VENIAIS),
+    ORACAO_MECANICA(Subcategory.PECADOS_VENIAIS),
+    DESINTERESSE_PELAS_COISAS_DE_DEUS(Subcategory.PECADOS_VENIAIS),
+
+    SEM_CATEGORIA_EXATA(Subcategory.SEM_CATEGORIA_EXATA);
+
+    private final Subcategory subcategory;
+
+    Category(Subcategory subcategory) {
+        this.subcategory = subcategory;
+    }
+
+}
+
