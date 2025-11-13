@@ -18,7 +18,9 @@ public class Exam {
     @Min(1)
     private int lastConfessionDays;
 
-    @NotNull @NotBlank @NotEmpty @Valid
+    @NotNull
+    @NotEmpty
+    @Valid
     private List<Sin> sins;
 
     public int getVenialSins(){

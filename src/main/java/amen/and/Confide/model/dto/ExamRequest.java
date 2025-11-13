@@ -12,7 +12,6 @@ public record ExamRequest(
     int lastConfessionDays,
 
     @NotNull
-    @NotBlank
     @NotEmpty
     @Valid
     List<Sin>sins
