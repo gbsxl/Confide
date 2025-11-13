@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("confide/api/exam")
 @Validated
 public class ExamController {
-    private ExamService examService;
+    private final ExamService examService;
 
     @PostMapping
     public ResponseEntity<ExamResponse> processConfessionSummary(@Valid @RequestBody ExamRequest examRequest){

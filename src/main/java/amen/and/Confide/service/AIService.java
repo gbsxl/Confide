@@ -1,25 +1,31 @@
 package amen.and.Confide.service;
 
-import amen.and.Confide.integration.OpenAIClient;
+import amen.and.Confide.integration.OpenAIChatService;
 import amen.and.Confide.model.domain.Exam;
 import amen.and.Confide.model.dto.AIResponseDTO;
+import amen.and.Confide.util.AIResponseValidator;
+import amen.and.Confide.util.JsonUtils;
 import amen.and.Confide.util.TextFormatter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@Service
-public class AIService {
-    OpenAIClient client;
-    ReportService reportService;
-    public AIResponseDTO sendIARequest(Exam examRequest) {
-        String formatted = TextFormatter.formatPrompt(examRequest);
-        String iaResult = client.requestOpenaiAPI(formatted);
-        AIResponseDTO responseDTO = parseResponse(iaResult);
+import java.util.ArrayList;
 
-        if (!validateResponse(responseDTO)) {
-            return getFallbackResponse();
+@Service
+@RequiredArgsConstructor
+public class AIService {
+    private final OpenAIChatService client;
+
+    public AIResponseDTO generateFeedbacks(Exam exam) {
+        String prompt = TextFormatter.formatPrompt(exam);
+        String iaResult = client.getAIChatResponse(prompt);
+        boolean iaResponse = validateResponse(iaResult);
+
+        if (!iaResponse) {
+            throw new RuntimeException();
         }
 
-        return responseDTO;
+        return parseResponse(iaResult);
     }
 
     private AIResponseDTO getFallbackResponse() {
@@ -27,10 +33,17 @@ public class AIService {
     }
 
     private AIResponseDTO parseResponse(String iaResult) {
-        return null;
+        return JsonUtils.fromJson(iaResult, AIResponseDTO.class);
     }
 
-    private boolean validateResponse(AIResponseDTO IAResponse){
-        return false;
+    private boolean validateResponse(String iaResult){
+        AIResponseDTO dto = parseResponse(iaResult);
+        try{
+            AIResponseValidator.validate(dto);
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+        return true;
     }
 }
+//implementar Resilience4j posteriormente
