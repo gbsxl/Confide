@@ -10,8 +10,8 @@ public class ReportService {
     public ExamResponse buildReport(Exam exam, AIResponseDTO aiResponse) {
         ExamResponse.Summary summary = new ExamResponse.Summary(
                 exam.getSins().size(),
-                countGraveSins(exam),
-                countVenialSins(exam)
+                aiResponse.graveSins().size(),
+                aiResponse.venialSins().size()
         );
 
         ExamResponse.Confession confession = new ExamResponse.Confession(
@@ -20,19 +20,13 @@ public class ReportService {
         );
 
         return new ExamResponse(
+                exam,
                 summary,
                 confession,
+                aiResponse.confessionTalk(),
                 aiResponse.actOfContrition(),
                 aiResponse.commitments(),
                 aiResponse.pastoralNotes()
         );
-    }
-
-    private int countVenialSins(Exam exam) {
-        return exam.getVenialSins();
-    }
-
-    private int countGraveSins(Exam exam) {
-        return exam.getMortalSins();
     }
 }

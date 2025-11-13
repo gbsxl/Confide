@@ -12,7 +12,7 @@ public class TextFormatter {
 
         Sua tarefa:
         1. Classifique os pecados relatados em **graveSins** (graves) e **venialSins** (leves), conforme a moral católica.
-        2. Escreva um **ato de contrição** personalizado entre 80 e 100 palavras.
+        2. Escreva um **ato de contrição** personalizado entre 80 e 100 palavras, ou uma frase de algum santo que faça muito sentido para o ato de contrição
         3. Sugira **2 a 3 compromissos práticos de conversão**.
         4. Acrescente **1 ou 2 notas pastorais** curtas e espiritualmente encorajadoras.
 
@@ -29,6 +29,7 @@ public class TextFormatter {
         {
           "graveSins": ["Desonrar pai e mãe"],
           "venialSins": ["Impaciência", "Pequena mentira", "Preguiça espiritual"],
+          "confessionTalk" : "Padre eu fui impaciente, disse uma pequena mentira, tive preguiça espiritual e pequei contra o quarto mandamento mortalmente não honrando meus pais fazendo..."
           "actOfContrition": "Meu Deus, eu me arrependo sinceramente...",
           "commitments": ["Dedicar tempo diário à oração", "Evitar julgamentos precipitados"],
           "pastoralNotes": ["Procure confessar-se logo.", "Deus é misericordioso e acolhe o arrependido."]

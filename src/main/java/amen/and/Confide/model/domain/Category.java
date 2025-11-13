@@ -25,7 +25,6 @@ public enum Category {
     NAO_COBICAR_MULHER_DO_PROXIMO(Subcategory.DEZ_MANDAMENTOS),
     NAO_COBICAR_BENS_DO_PROXIMO(Subcategory.DEZ_MANDAMENTOS),
 
-
     // pecados veniais
     IMPRUDENCIA(Subcategory.PECADOS_VENIAIS),
     IMPACIENCIA(Subcategory.PECADOS_VENIAIS),

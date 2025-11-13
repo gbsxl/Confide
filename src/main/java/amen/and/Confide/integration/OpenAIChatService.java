@@ -15,7 +15,7 @@ public class OpenAIChatService {
         this.openAiChatModel = openAiChatModel;
     }
     public String getAIChatResponse(String examPrompt) {
-        ChatOptions chatOptions = ChatOptions.builder().model("gpt-4o-mini").temperature(0.5).build();
+        ChatOptions chatOptions = ChatOptions.builder().model("gpt-4o-mini").temperature(0.9).build();
         Prompt prompt = new Prompt(new UserMessage(examPrompt), chatOptions);
         ChatResponse response = openAiChatModel.call(prompt);
         return response.getResult().getOutput().getText();
