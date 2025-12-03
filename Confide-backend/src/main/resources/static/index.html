@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confide - Preparação para Confissão</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        h1 { color: #667eea; text-align: center; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 30px; }
+        label { display: block; margin-top: 15px; font-weight: bold; color: #333; }
+        input[type="number"], select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        textarea { min-height: 80px; resize: vertical; }
+        .sin-item {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .sin-item h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        button:hover { background: #5568d3; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        .btn-add { background: #28a745; }
+        .btn-add:hover { background: #218838; }
+        .btn-remove { background: #dc3545; padding: 8px 15px; font-size: 14px; }
+        .btn-remove:hover { background: #c82333; }
+        .btn-submit { width: 100%; margin-top: 30px; padding: 15px; font-size: 18px; }
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .result h2 { color: #667eea; margin-bottom: 15px; }
+        .result section { margin: 20px 0; }
+        .result h3 { color: #555; margin-top: 20px; margin-bottom: 10px; }
+        .result ul { padding-left: 20px; }
+        .result li { margin: 5px 0; }
+        .confession-talk {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            border: 2px solid #667eea;
+            margin: 10px 0;
+            font-style: italic;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+        .loading.active { display: block; }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>✝️ Confide</h1>
+    <p class="subtitle">Prepare sua confissão sacramental</p>
+
+    <form id="examForm">
+        <label for="lastConfessionDays">Há quantos dias você não se confessa?</label>
+        <input type="number" id="lastConfessionDays" min="1" value="30" required>
+
+        <div id="sinsContainer">
+            <h2 style="margin-top: 30px; color: #667eea;">Pecados a Confessar</h2>
+        </div>
+
+        <button type="button" class="btn-add" onclick="addSin()">+ Adicionar Pecado</button>
+        <button type="submit" class="btn-submit">Gerar Ficha de Confissão</button>
+    </form>
+
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p style="margin-top: 20px; color: #667eea;">Preparando sua confissão...</p>
+    </div>
+
+    <div id="error" style="display: none;" class="error"></div>
+
+    <div id="result" style="display: none;" class="result"></div>
+</div>
+
+<script>
+    const API_URL = 'http://localhost:8080/confide/api/exam';
+
+    const categories = [
+        'SOBERBA', 'AVAREZA', 'LUXURIA', 'IRA', 'GULA', 'INVEJA', 'PREGUICA',
+        'AMAR_A_DEUS_SOBRE_TODAS_AS_COISAS', 'TOMAR_NOME_DE_DEUS_EM_VAO',
+        'NAO_GUARDAR_DOMINGO', 'DESONRAR_PAI_MAE', 'NAO_MATAR',
+        'NAO_COMETER_ADULTERIO', 'NAO_ROUBAR', 'NAO_LEVANTAR_FALSO_TESTEMUNHO',
+        'NAO_COBICAR_MULHER_DO_PROXIMO', 'NAO_COBICAR_BENS_DO_PROXIMO',
+        'IMPACIENCIA', 'FOFOCA', 'PEQUENA_MENTIRA', 'PREGUICA_ESPIRITUAL',
+        'FALTA_DE_CARIDADE', 'FALAR_MAL_DOS_OUTROS', 'NEGLIGENCIA',
+        'MAL_USO_DO_TEMPO', 'FALTA_DE_PERDAO', 'DESATENCAO_NA_ORACAO'
+    ];
+
+    let sinCount = 0;
+
+    function addSin() {
+        sinCount++;
+        const container = document.getElementById('sinsContainer');
+        const sinDiv = document.createElement('div');
+        sinDiv.className = 'sin-item';
+        sinDiv.id = `sin-${sinCount}`;
+        sinDiv.innerHTML = `
+            <h3>Pecado ${sinCount}</h3>
+            <label>Nome do Pecado:</label>
+            <input type="text" name="sinName${sinCount}" required placeholder="Ex: Masturbação">
+
+            <label>Categoria:</label>
+            <select name="sinCategory${sinCount}" required>
+                ${categories.map(cat => `<option value="${cat}">${cat.replace(/_/g, ' ')}</option>`).join('')}
+            </select>
+
+            <label>Frequência:</label>
+            <input type="text" name="sinFrequency${sinCount}" placeholder="Ex: 3 vezes por semana">
+
+            <label>Descrição (opcional):</label>
+            <textarea name="sinDescription${sinCount}" placeholder="Contexto e detalhes..."></textarea>
+
+            <button type="button" class="btn-remove" onclick="removeSin(${sinCount})">Remover</button>
+        `;
+        container.appendChild(sinDiv);
+    }
+
+    function removeSin(id) {
+        document.getElementById(`sin-${id}`).remove();
+    }
+
+    // Adiciona 1 pecado inicial
+    addSin();
+
+    document.getElementById('examForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const lastConfessionDays = parseInt(document.getElementById('lastConfessionDays').value);
+        const sins = [];
+
+        for (let i = 1; i <= sinCount; i++) {
+            const sinDiv = document.getElementById(`sin-${i}`);
+            if (!sinDiv) continue;
+
+            const name = sinDiv.querySelector(`[name="sinName${i}"]`).value;
+            const category = sinDiv.querySelector(`[name="sinCategory${i}"]`).value;
+            const frequency = sinDiv.querySelector(`[name="sinFrequency${i}"]`).value;
+            const description = sinDiv.querySelector(`[name="sinDescription${i}"]`).value;
+
+            if (name) {
+                sins.push({ name, category, frequency, description });
+            }
+        }
+
+        if (sins.length === 0) {
+            alert('Adicione pelo menos um pecado!');
+            return;
+        }
+
+        // Mostra loading
+        document.getElementById('loading').classList.add('active');
+        document.getElementById('result').style.display = 'none';
+        document.getElementById('error').style.display = 'none';
+
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ lastConfessionDays, sins })
+            });
+
+            if (!response.ok) throw new Error('Erro ao processar exame');
+
+            const data = await response.json();
+            displayResult(data);
+        } catch (error) {
+            document.getElementById('error').textContent =
+                'Erro ao processar exame. Verifique se o backend está rodando em localhost:8080';
+            document.getElementById('error').style.display = 'block';
+        } finally {
+            document.getElementById('loading').classList.remove('active');
+        }
+    });
+
+    function displayResult(data) {
+        const result = document.getElementById('result');
+        result.innerHTML = `
+            <h2>📋 Sua Ficha de Confissão</h2>
+
+            <section>
+                <h3>📊 Resumo</h3>
+                <p><strong>Total de pecados:</strong> ${data.summary.totalSins}</p>
+                <p><strong>Pecados graves:</strong> ${data.summary.graveSins}</p>
+                <p><strong>Pecados veniais:</strong> ${data.summary.venialSins}</p>
+            </section>
+
+            <section>
+                <h3>🗣️ O que dizer ao Padre</h3>
+                <div class="confession-talk">${data.confessionTalk}</div>
+            </section>
+
+            <section>
+                <h3>⚠️ Pecados Graves</h3>
+                <ul>${data.confession.graveSins.map(s => `<li>${s}</li>`).join('')}</ul>
+            </section>
+
+            <section>
+                <h3>📝 Pecados Veniais</h3>
+                <ul>${data.confession.venialSins.map(s => `<li>${s}</li>`).join('')}</ul>
+            </section>
+
+            <section>
+                <h3>🙏 Ato de Contrição</h3>
+                <p style="line-height: 1.6;">${data.actOfContrition}</p>
+            </section>
+
+            <section>
+                <h3>✨ Compromissos de Conversão</h3>
+                <ul>${data.commitments.map(c => `<li>${c}</li>`).join('')}</ul>
+            </section>
+
+            <section>
+                <h3>💡 Notas Pastorais</h3>
+                <ul>${data.pastoralNotes.map(n => `<li>${n}</li>`).join('')}</ul>
+            </section>
+        `;
+        result.style.display = 'block';
+        result.scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>
