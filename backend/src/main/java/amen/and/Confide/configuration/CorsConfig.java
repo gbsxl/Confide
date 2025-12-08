@@ -17,7 +17,6 @@ public class CorsConfig {
                         .allowedMethods("POST")
                         .allowCredentials(true);
             }
-            UsernameNotFoundException()
         };
     }
 }
