@@ -21,10 +21,11 @@ public class OpenAIChatService {
 
     public OpenAIChatService(
             @Value("${spring.ai.openai.api-key}") String apiKey,
-            @Value("${spring.ai.openai.assistant.id}") String assistantId) {
+            @Value("${spring.ai.openai.assistant.id}") String assistantId,
+            @Value("${spring.ai.openai.base-url:https://api.openai.com/v1}") String baseUrl) {
         this.assistantId = assistantId;
         this.restClient = RestClient.builder()
-                .baseUrl("https://api.openai.com/v1")
+                .baseUrl(baseUrl)
                 .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
                 .defaultHeader("OpenAI-Beta", "assistants=v2")
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -46,8 +47,7 @@ public class OpenAIChatService {
                     .uri("/threads/{thread_id}/messages", threadId)
                     .body(Map.of(
                             "role", "user",
-                            "content", userMessage
-                    ))
+                            "content", userMessage))
                     .retrieve()
                     .toBodilessEntity();
 
@@ -117,21 +117,26 @@ public class OpenAIChatService {
 
         throw new RuntimeException("Timeout esperando conclusão do run");
     }
-    record ThreadResponse(String id) {}
 
-    record RunResponse(String id, String status) {}
+    record ThreadResponse(String id) {
+    }
 
-    record MessagesResponse(List<Message> data) {}
+    record RunResponse(String id, String status) {
+    }
+
+    record MessagesResponse(List<Message> data) {
+    }
 
     record Message(
             String role,
-            List<Content> content
-    ) {}
+            List<Content> content) {
+    }
 
     record Content(
             String type,
-            @JsonProperty("text") TextContent text
-    ) {}
+            @JsonProperty("text") TextContent text) {
+    }
 
-    record TextContent(String value) {}
+    record TextContent(String value) {
+    }
 }
