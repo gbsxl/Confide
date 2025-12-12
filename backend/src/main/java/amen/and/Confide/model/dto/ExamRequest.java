@@ -3,6 +3,7 @@ package amen.and.Confide.model.dto;
 import amen.and.Confide.model.domain.Sin;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+import lombok.Getter;
 
 import java.util.List;
 

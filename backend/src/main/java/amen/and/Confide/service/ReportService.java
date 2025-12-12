@@ -3,11 +3,12 @@ package amen.and.Confide.service;
 import amen.and.Confide.model.domain.Exam;
 import amen.and.Confide.model.dto.AIResponseDTO;
 import amen.and.Confide.model.dto.ExamResponse;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ReportService {
-    public ExamResponse buildReport(Exam exam, AIResponseDTO aiResponse) {
+    public ExamResponse buildReport(@Valid Exam exam, @Valid AIResponseDTO aiResponse) {
         ExamResponse.Summary summary = new ExamResponse.Summary(
                 exam.getSins().size(),
                 countGraveSins(exam),
@@ -30,11 +31,11 @@ public class ReportService {
         );
     }
 
-    private int countVenialSins(Exam exam) {
+    private int countVenialSins(@Valid Exam exam) {
         return exam.getVenialSins();
     }
 
-    private int countGraveSins(Exam exam) {
+    private int countGraveSins(@Valid Exam exam) {
         return exam.getMortalSins();
     }
 }

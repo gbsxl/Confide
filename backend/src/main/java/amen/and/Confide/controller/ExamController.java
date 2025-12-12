@@ -1,5 +1,6 @@
 package amen.and.Confide.controller;
 
+import amen.and.Confide.model.dto.ApiResponse;
 import amen.and.Confide.model.dto.ExamRequest;
 import amen.and.Confide.model.dto.ExamResponse;
 import amen.and.Confide.service.ExamService;
@@ -19,9 +20,11 @@ public class ExamController {
     private final ExamService examService;
 
     @PostMapping
-    public ResponseEntity<ExamResponse> processConfessionSummary(@Valid @RequestBody ExamRequest examRequest) {
+    public ResponseEntity<ApiResponse<?>> processConfessionSummary(@Valid @RequestBody ExamRequest examRequest) {
         ValidationService.isValid(examRequest);
         ExamResponse examResponse = examService.processConfessionSummary(examRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(examResponse);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ApiResponse.success(examResponse));
     }
 }

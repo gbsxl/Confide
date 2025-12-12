@@ -2,9 +2,10 @@ package amen.and.Confide.util;
 
 import amen.and.Confide.model.domain.Exam;
 import amen.and.Confide.model.domain.Sin;
+import jakarta.validation.Valid;
 
 public class TextFormatter {
-    public static String formatPrompt(Exam exam) {
+    public static String formatPrompt(@Valid Exam exam) {
         StringBuilder prompt = new StringBuilder();
 
         prompt.append("""

@@ -1,5 +1,9 @@
-package amen.and.Confide.integration;
+package amen.and.Confide.service;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -27,7 +31,7 @@ public class OpenAIChatService {
                 .build();
     }
 
-    public String getAIChatResponse(String userMessage) {
+    public String getAIChatResponse(@NotEmpty @NotNull @NotBlank @Valid String userMessage) {
         try {
             var threadResponse = restClient.post()
                     .uri("/threads")
