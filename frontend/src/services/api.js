@@ -13,16 +13,41 @@ const api = axios.create({
 export const processExam = async (examRequest) => {
     try {
         const response = await api.post('', examRequest);
-        console.log(response.data);
+
+        // Handle Standardized ApiResponse (if wrapper exists)
+        if (response.data && response.data.success !== undefined && response.data.data) {
+            return { success: true, data: response.data.data };
+        }
+
+        // Handle Direct Response (Standard Swagger 201)
         return { success: true, data: response.data };
     } catch (error) {
         console.error('API Error:', error);
 
-        // FALLBACK: Retornar Mock após 3 segundos
+        // Check for Standardized Error Response
+        if (error.response && error.response.data) {
+            const errorData = error.response.data;
+
+            // If we have a standardized error structure
+            if (errorData.success === false || errorData.errorDetails || errorData.message) {
+                return {
+                    success: false,
+                    error: {
+                        message: errorData.message || 'Erro desconhecido no servidor',
+                        details: errorData.errorDetails,
+                        validationErrors: errorData.errorDetails?.validationErrors
+                    }
+                };
+            }
+        }
+
+        // FALLBACK ONLY ON NETWORK ERROR OR 500 WITHOUT STRUCTURE
+        // Fallback: Retornar Mock após 3 segundos
         await new Promise(resolve => setTimeout(resolve, 3000));
 
         return {
-            success: false,
+            success: false, // Mark as false success but provide data for fallback
+            isFallback: true,
             data: generateMockResponse(examRequest),
         };
     }

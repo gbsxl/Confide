@@ -38,19 +38,26 @@ const Loading = () => {
                 result = apiResult;
             }
 
-            if (result.success || result.data) {
-                // Even if success is false (fallback), we have data from mock
+            if (result.success || (result.data && result.isFallback)) {
                 setExamResponse(result.data);
                 navigate('/ficha');
+            } else if (result.error) {
+                // Handle specific API error
+                let msg = result.error.message;
+                if (result.error.validationErrors && result.error.validationErrors.length > 0) {
+                    msg += "\nDetails:\n" + result.error.validationErrors.map(e => `- ${e.field}: ${e.message}`).join("\n");
+                }
+                alert(`Falha no processamento:\n${msg}`);
+                navigate('/'); // Return to home or maybe back to exam? Home is safer for now.
             } else {
-                // Handle catastrophic failure (shouldn't happen with mock fallback)
-                alert("Ocorreu um erro ao processar. Tente novamente.");
+                // Handle catastrophic failure
+                alert("Ocorreu um erro inesperado ao processar sua confissão. Tente novamente.");
                 navigate('/');
             }
         };
 
         submitExam();
-    }, [lastConfessionDays, sins, navigate, setExamResponse]);
+    }, [lastConfessionDays, sins, navigate, setExamResponse, mode]);
 
     return (
         <div className="min-h-screen bg-black flex flex-col items-center justify-center p-6 relative overflow-hidden">

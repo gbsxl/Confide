@@ -12,11 +12,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @Tag(name = "Exam", description = "Examination of Conscience API")
 @RestController
 @RequiredArgsConstructor
@@ -36,8 +38,10 @@ public class ExamController {
 
         ValidationService.isValid(examRequest);
         ExamResponse examResponse = examService.processConfessionSummary(examRequest);
-        return ResponseEntity
+        ResponseEntity<ApiResponse<?>> body = ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(ApiResponse.success(examResponse));
+        log.info(String.valueOf(body));
+        return body;
     }
 }

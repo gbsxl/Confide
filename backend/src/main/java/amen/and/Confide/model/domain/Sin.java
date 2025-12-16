@@ -1,10 +1,7 @@
 package amen.and.Confide.model.domain;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -19,6 +16,7 @@ public class Sin {
     private Category category;
     private Subcategory subcategory;
     private String frequency;
+    @Size(max = 2000)
     private String description;
 
     public Sin(String name, Category category, String frequency, String description) {
