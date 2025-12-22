@@ -4,10 +4,16 @@ import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
+import { SEO } from '../components/SEO';
 
 const Landing = () => {
     return (
         <div className="min-h-screen bg-black flex flex-col relative overflow-hidden">
+            <SEO
+                title="Preparação para Confissão"
+                description="Prepare-se para a confissão sacramental com o Confide. Exame de consciência guiado, ficha de confissão e recursos espirituais para sua vida de fé. Privado e Seguro."
+                canonical="https://www.confide.website/"
+            />
             {/* Background Glow */}
             <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-amber-500/10 rounded-full blur-[120px] pointer-events-none" />
 
