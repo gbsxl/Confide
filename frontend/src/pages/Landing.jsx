@@ -1,6 +1,5 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import { Shield, Lock, Zap } from 'lucide-react';
+import { Lock, Zap, Sword } from 'lucide-react';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import Button from '../components/ui/Button';
@@ -48,11 +47,11 @@ const Landing = () => {
 
                     <Card className="flex flex-col items-center text-center gap-4 hover:bg-white/10 transition-colors">
                         <div className="w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400">
-                            <Shield size={24} />
+                            <Sword size={24} />
                         </div>
-                        <h3 className="text-xl font-bold text-white">Guiado por IA</h3>
+                        <h3 className="text-xl font-bold text-white">Armas Espirituais</h3>
                         <p className="text-white/60">
-                            Exame de consciência inteligente adaptado à sua situação de vida.
+                            Receba conselhos práticos e orações específicas para combater cada pecado.
                         </p>
                     </Card>
 
