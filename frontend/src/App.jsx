@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { ConfessionProvider } from './context/ConfessionContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import Landing from './pages/Landing';
@@ -24,6 +25,7 @@ function App() {
             <Route path="/processando" element={<Loading />} />
             <Route path="/ficha" element={<ConfessionSheet />} />
           </Routes>
+          <SpeedInsights />
         </BrowserRouter>
       </ConfessionProvider>
     </ErrorBoundary>
