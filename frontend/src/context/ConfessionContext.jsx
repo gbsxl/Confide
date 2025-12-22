@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { saveExamSession, loadExamSession, clearExamSession } from '../hooks/useDataPersistence';
 
 const ConfessionContext = createContext();
 
@@ -16,6 +17,38 @@ export const ConfessionProvider = ({ children }) => {
     const [examType, setExamType] = useState(null); // 'short' | 'long'
     const [sins, setSins] = useState([]);
     const [examResponse, setExamResponse] = useState(null);
+    const [hasRecoveryData, setHasRecoveryData] = useState(false);
+    const [isInitialized, setIsInitialized] = useState(false);
+
+    // Load saved session on mount
+    useEffect(() => {
+        const savedSession = loadExamSession();
+        if (savedSession) {
+            setLastConfessionDays(savedSession.lastConfessionDays || null);
+            setMode(savedSession.mode || null);
+            setExamType(savedSession.examType || null);
+            setSins(savedSession.sins || []);
+            setHasRecoveryData(savedSession.sins && savedSession.sins.length > 0);
+        }
+        setIsInitialized(true);
+    }, []);
+
+    // Auto-save session whenever relevant data changes (after initialization)
+    useEffect(() => {
+        if (!isInitialized) return;
+
+        // Don't save if everything is empty
+        if (!lastConfessionDays && !mode && !examType && sins.length === 0) {
+            return;
+        }
+
+        saveExamSession({
+            lastConfessionDays,
+            mode,
+            examType,
+            sins,
+        });
+    }, [lastConfessionDays, mode, examType, sins, isInitialized]);
 
     const addSin = (sin) => {
         setSins(prev => {
@@ -29,13 +62,39 @@ export const ConfessionProvider = ({ children }) => {
         setSins(prev => prev.filter(s => s.questionId !== questionId));
     };
 
-    const resetConfession = () => {
+    const resetConfession = useCallback(() => {
         setLastConfessionDays(null);
         setMode(null);
         setExamType(null);
         setSins([]);
         setExamResponse(null);
-    };
+        setHasRecoveryData(false);
+        clearExamSession();
+    }, []);
+
+    // Clear session data only after successful completion
+    const completeConfession = useCallback(() => {
+        clearExamSession();
+        setHasRecoveryData(false);
+    }, []);
+
+    // Recover previous session (called explicitly by user)
+    const recoverSession = useCallback(() => {
+        const savedSession = loadExamSession();
+        if (savedSession) {
+            setLastConfessionDays(savedSession.lastConfessionDays || null);
+            setMode(savedSession.mode || null);
+            setExamType(savedSession.examType || null);
+            setSins(savedSession.sins || []);
+        }
+        setHasRecoveryData(false);
+    }, []);
+
+    // Dismiss recovery without loading data
+    const dismissRecovery = useCallback(() => {
+        setHasRecoveryData(false);
+        clearExamSession();
+    }, []);
 
     const value = {
         lastConfessionDays,
@@ -51,6 +110,12 @@ export const ConfessionProvider = ({ children }) => {
         examResponse,
         setExamResponse,
         resetConfession,
+        // New persistence-related
+        hasRecoveryData,
+        recoverSession,
+        dismissRecovery,
+        completeConfession,
+        isInitialized,
     };
 
     return (
@@ -59,3 +124,4 @@ export const ConfessionProvider = ({ children }) => {
         </ConfessionContext.Provider>
     );
 };
+

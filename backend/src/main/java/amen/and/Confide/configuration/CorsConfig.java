@@ -1,6 +1,5 @@
 package amen.and.Confide.configuration;
 
-import io.micrometer.context.NonNullApi;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -28,8 +27,7 @@ public class CorsConfig {
             public void addCorsMappings(@NonNull CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins(
-                                corsProperties.getAllowedOrigins().toArray(new String[0])
-                        )
+                                corsProperties.getAllowedOrigins().toArray(new String[0]))
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);

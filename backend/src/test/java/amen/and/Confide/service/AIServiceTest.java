@@ -2,6 +2,8 @@ package amen.and.Confide.service;
 
 import amen.and.Confide.model.domain.Exam;
 import amen.and.Confide.model.dto.AIResponseDTO;
+import amen.and.Confide.service.AIService;
+import amen.and.Confide.service.OpenAIProviderService;
 import amen.and.Confide.util.TestDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +25,7 @@ import static org.mockito.Mockito.times;
 class AIServiceTest {
 
     @Mock
-    private OpenAIChatService openAIChatService;
+    private OpenAIProviderService openAIProviderService;
 
     @InjectMocks
     private AIService aiService;
@@ -41,7 +43,7 @@ class AIServiceTest {
     @DisplayName("Should generate feedbacks successfully with valid exam")
     void shouldGenerateFeedbacksSuccessfully() {
         // Given
-        given(openAIChatService.getAIChatResponse(anyString())).willReturn(validJsonResponse);
+        given(openAIProviderService.getAIChatResponse(anyString())).willReturn(validJsonResponse);
 
         // When
         AIResponseDTO result = aiService.generateFeedbacks(validExam);
@@ -55,7 +57,7 @@ class AIServiceTest {
         assertThat(result.commitments()).isNotEmpty();
         assertThat(result.pastoralNotes()).isNotEmpty();
 
-        then(openAIChatService).should(times(1)).getAIChatResponse(anyString());
+        then(openAIProviderService).should(times(1)).getAIChatResponse(anyString());
     }
 
     @Test
@@ -63,13 +65,13 @@ class AIServiceTest {
     void shouldThrowExceptionWhenAIResponseIsInvalid() {
         // Given
         String invalidResponse = TestDataBuilder.invalidAIResponseJson();
-        given(openAIChatService.getAIChatResponse(anyString())).willReturn(invalidResponse);
+        given(openAIProviderService.getAIChatResponse(anyString())).willReturn(invalidResponse);
 
         // When & Then
         assertThatThrownBy(() -> aiService.generateFeedbacks(validExam))
                 .isInstanceOf(RuntimeException.class);
 
-        then(openAIChatService).should(times(1)).getAIChatResponse(anyString());
+        then(openAIProviderService).should(times(1)).getAIChatResponse(anyString());
     }
 
     @Test
@@ -77,20 +79,20 @@ class AIServiceTest {
     void shouldThrowExceptionWhenResponseIsMalformedJson() {
         // Given
         String malformedJson = TestDataBuilder.malformedJson();
-        given(openAIChatService.getAIChatResponse(anyString())).willReturn(malformedJson);
+        given(openAIProviderService.getAIChatResponse(anyString())).willReturn(malformedJson);
 
         // When & Then
         assertThatThrownBy(() -> aiService.generateFeedbacks(validExam))
                 .isInstanceOf(RuntimeException.class);
 
-        then(openAIChatService).should(times(1)).getAIChatResponse(anyString());
+        then(openAIProviderService).should(times(1)).getAIChatResponse(anyString());
     }
 
     @Test
     @DisplayName("Should validate response correctly with valid data")
     void shouldValidateResponseCorrectly() {
         // Given
-        given(openAIChatService.getAIChatResponse(anyString())).willReturn(validJsonResponse);
+        given(openAIProviderService.getAIChatResponse(anyString())).willReturn(validJsonResponse);
 
         // When
         AIResponseDTO result = aiService.generateFeedbacks(validExam);
@@ -104,21 +106,21 @@ class AIServiceTest {
     void shouldHandleExamWithMultipleSins() {
         // Given
         Exam examWithMixedSins = TestDataBuilder.examWithMixedSins();
-        given(openAIChatService.getAIChatResponse(anyString())).willReturn(validJsonResponse);
+        given(openAIProviderService.getAIChatResponse(anyString())).willReturn(validJsonResponse);
 
         // When
         AIResponseDTO result = aiService.generateFeedbacks(examWithMixedSins);
 
         // Then
         assertThat(result).isNotNull();
-        then(openAIChatService).should(times(1)).getAIChatResponse(anyString());
+        then(openAIProviderService).should(times(1)).getAIChatResponse(anyString());
     }
 
     @Test
     @DisplayName("Should propagate exception from OpenAI service")
     void shouldPropagateExceptionFromOpenAIService() {
         // Given
-        given(openAIChatService.getAIChatResponse(anyString()))
+        given(openAIProviderService.getAIChatResponse(anyString()))
                 .willThrow(new RuntimeException("OpenAI API error"));
 
         // When & Then
@@ -126,6 +128,6 @@ class AIServiceTest {
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("OpenAI API error");
 
-        then(openAIChatService).should(times(1)).getAIChatResponse(anyString());
+        then(openAIProviderService).should(times(1)).getAIChatResponse(anyString());
     }
 }

@@ -6,41 +6,46 @@ import amen.and.Confide.util.AIResponseValidator;
 import amen.and.Confide.util.JsonUtils;
 import amen.and.Confide.util.TextFormatter;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+/**
+ * Serviço de IA que utiliza o OpenAIProviderService (Responses API)
+ * para gerar feedback espiritual baseado no exame de consciência.
+ */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AIService {
-    private final OpenAIChatService client;
+    private final OpenAIProviderService aiProvider;
 
     public AIResponseDTO generateFeedbacks(@Valid Exam exam) {
         String prompt = TextFormatter.formatPrompt(exam);
-        String iaResult = client.getAIChatResponse(prompt);
-        boolean iaResponse = validateResponse(iaResult);
+        log.debug("Enviando prompt para IA: {} caracteres", prompt.length());
 
-        if (!iaResponse) {
-            throw new RuntimeException();
+        String iaResult = aiProvider.getAIChatResponse(prompt);
+
+        if (!validateResponse(iaResult)) {
+            log.error("Resposta da IA inválida ou não passou na validação");
+            throw new RuntimeException("Resposta da IA não atendeu aos critérios de validação");
         }
 
         return parseResponse(iaResult);
     }
 
-    private AIResponseDTO parseResponse(@NotEmpty @NotNull @NotBlank @Valid String iaResult) {
+    private AIResponseDTO parseResponse(String iaResult) {
         return JsonUtils.fromJson(iaResult, AIResponseDTO.class);
     }
 
-    private boolean validateResponse(@NotEmpty @NotNull @NotBlank @Valid String iaResult){
-        AIResponseDTO dto = parseResponse(iaResult);
-        try{
+    private boolean validateResponse(String iaResult) {
+        try {
+            AIResponseDTO dto = parseResponse(iaResult);
             AIResponseValidator.validate(dto);
-        } catch (IllegalArgumentException e) {
+            return true;
+        } catch (Exception e) {
+            log.warn("Validação da resposta falhou: {}", e.getMessage());
             return false;
         }
-        return true;
     }
 }
-//implementar Resilience4j posteriormente

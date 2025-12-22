@@ -1,16 +1,28 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8080/confide/api/exam';
+// Use environment variable, fallback to empty string (offline mode)
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
-const api = axios.create({
+// Only create axios instance if API URL is configured
+const api = API_BASE_URL ? axios.create({
     baseURL: API_BASE_URL,
     timeout: 60000, // 60 seconds
     headers: {
         'Content-Type': 'application/json',
     },
-});
+}) : null;
 
 export const processExam = async (examRequest) => {
+    // If no API is configured, go straight to mock response
+    if (!api) {
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Brief delay for UX
+        return {
+            success: true,
+            isFallback: true,
+            data: generateMockResponse(examRequest),
+        };
+    }
+
     try {
         const response = await api.post('', examRequest);
 
