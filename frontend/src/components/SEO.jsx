@@ -29,13 +29,14 @@ export const SEO = ({
             <meta property="og:type" content={openGraph.type || 'website'} />
             <meta property="og:title" content={openGraph.title || fullTitle} />
             <meta property="og:description" content={openGraph.description || description} />
-            {openGraph.image && <meta property="og:image" content={openGraph.image} />}
+            <meta property="og:image" content={openGraph.image || "https://www.confide.website/preview.png"} />
+            <meta property="og:url" content={window.location.href} />
 
             {/* Twitter */}
             <meta name="twitter:card" content="summary_large_image" />
             <meta name="twitter:title" content={openGraph.title || fullTitle} />
             <meta name="twitter:description" content={openGraph.description || description} />
-            {openGraph.image && <meta name="twitter:image" content={openGraph.image} />}
+            <meta name="twitter:image" content={openGraph.image || "https://www.confide.website/preview.png"} />
         </Helmet>
     );
 };
