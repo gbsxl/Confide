@@ -11,12 +11,12 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.confide.website/exame/adulto</loc>
+    <loc>https://www.confide.website/dias-confissao</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.confide.website/exame/crianca</loc>
+    <loc>https://www.confide.website/escolher-exame</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>

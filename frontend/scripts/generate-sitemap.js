@@ -9,9 +9,8 @@ const __dirname = path.dirname(__filename);
 const routes = [
     '/',
     '/escolher-modo',
-    '/exame/adulto',
-    '/exame/crianca',
-    // Add other static routes here
+    '/dias-confissao',
+    '/escolher-exame',
 ];
 
 const domain = 'https://www.confide.website';
